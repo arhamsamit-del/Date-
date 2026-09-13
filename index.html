@@ -67,7 +67,27 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 function pick(el,name){document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selectedPlace=name;document.getElementById('customBox').classList.toggle('hidden',name!=='Custom idea')}
 function nextFromChoices(){if(!selectedPlace){toast('You have to choose one 😭🤍');return}if(selectedPlace==='Custom idea'){const v=document.getElementById('customInput').value.trim();if(v)selectedPlace=v;else{toast('Tell me your idea first 👀');return}}go(4)}
 function pickDate(el,date){document.querySelectorAll('.date').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selectedDate=date}
-function finish(){if(!selectedDate){toast('Pick a date, Dilruba 🌷');return}go(5);celebrate()}
+async function finish(){
+    if(!selectedDate){
+        toast('Pick a date, Dilruba 🌷');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("activity", selectedPlace);
+    formData.append("date", selectedDate);
+
+    await fetch("https://formspree.io/f/moeqokob", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "Accept": "application/json"
+        }
+    });
+
+    go(5);
+    celebrate();
+}
 function celebrate(){const c=document.getElementById('confetti');for(let i=0;i<55;i++){const x=document.createElement('i');x.style.left=Math.random()*100+'%';x.style.animationDelay=Math.random()*.5+'s';x.style.transform=`rotate(${Math.random()*360}deg)`;x.textContent=['♡','✦','🦋','⋆'][Math.floor(Math.random()*4)];c.appendChild(x);setTimeout(()=>x.remove(),2800)}}
 const no=document.getElementById('noBtn');let noCount=0;
 function dodge(){noCount++;const maxX=Math.min(120+noCount*18,260),maxY=Math.min(80+noCount*8,130);no.style.transform=`translate(${(Math.random()*2-1)*maxX}px,${(Math.random()*2-1)*maxY}px) rotate(${(Math.random()*2-1)*7}deg)`;const msgs=['nice try 😭','that button seems shy','are you sure?? 🥺','the universe says no to NO','MYLO PLEASE 😭🤍'];toast(msgs[Math.min(noCount-1,msgs.length-1)])}
