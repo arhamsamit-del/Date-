@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oishee 🦋 — A Little Question</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root{--cream:#f7f2e9;--paper:#fffdf8;--ink:#23352c;--muted:#6f7b72;--green:#617b69;--green2:#8ea493;--line:#dfe3da;--shadow:0 18px 50px rgba(35,53,44,.12)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--cream);color:var(--ink)}
+body{font-family:"DM Sans",sans-serif;overflow-x:hidden}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:radial-gradient(#7d8d80 .55px,transparent .55px);background-size:8px 8px}
+.page{display:none;min-height:100svh;padding:28px 20px 44px;position:relative}.page.active{display:flex;align-items:center;justify-content:center;animation:pageIn .55s ease both}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.shell{width:min(980px,100%);margin:auto}.hero{text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px}
+.kicker{font-family:Caveat,cursive;font-size:24px;color:var(--green);margin:0}h1,h2,p{margin:0}h1{font-family:Caveat,cursive;font-size:clamp(48px,10vw,82px);line-height:.9;font-weight:700;letter-spacing:-1px}h2{font-family:Caveat,cursive;font-size:clamp(38px,7vw,58px);line-height:1.05}
+.subtitle{font-size:15px;color:var(--muted);max-width:560px;line-height:1.7}.polaroid{background:#fff;padding:12px 12px 38px;box-shadow:var(--shadow);position:relative}.polaroid img{display:block;width:100%;height:100%;object-fit:cover}
+.hero-photo{width:min(310px,72vw);aspect-ratio:4/5;transform:rotate(-3deg)}.hero-photo:after{content:"mylo 🦋";position:absolute;left:0;right:0;bottom:6px;text-align:center;font:600 22px Caveat,cursive;color:#35493e}
+.decor{position:absolute;pointer-events:none;user-select:none;font-size:25px;animation:float 4s ease-in-out infinite}.d1{top:7%;left:10%}.d2{top:16%;right:12%;animation-delay:.8s}.d3{bottom:14%;left:13%;animation-delay:1.5s}.d4{bottom:8%;right:14%;animation-delay:2.2s}
+@keyframes float{50%{transform:translateY(-10px) rotate(5deg)}}.buttons{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+button,.choice{font:600 15px "DM Sans",sans-serif;border:0;cursor:pointer;transition:.2s ease}button{padding:14px 22px;border-radius:999px}.yes{background:var(--ink);color:#fff;box-shadow:0 8px 20px rgba(35,53,44,.2)}.no{background:#fff;color:var(--ink);border:1px solid var(--line);position:relative}button:hover{transform:translateY(-2px)}
+.card{background:rgba(255,253,248,.88);border:1px solid rgba(130,145,135,.18);box-shadow:var(--shadow);border-radius:28px;padding:clamp(24px,5vw,48px)}
+.split{display:grid;grid-template-columns:1.15fr .85fr;gap:34px;align-items:center}.side-photo{width:min(290px,70vw);aspect-ratio:3/4;transform:rotate(4deg);justify-self:center}.side-photo:after{content:"there she is… 🦋";position:absolute;left:0;right:0;bottom:6px;text-align:center;font:600 21px Caveat,cursive;color:#35493e}
+.navrow{display:flex;justify-content:center;margin-top:24px}.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:26px}.choice{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;text-align:left;box-shadow:0 7px 20px rgba(35,53,44,.06)}
+.choice b{display:block;font-family:Caveat,cursive;font-size:27px;margin-bottom:4px}.choice span{color:var(--muted);font-size:13px;line-height:1.5}.choice.selected{border:2px solid var(--green);transform:translateY(-2px)}
+.custom{margin-top:14px}.custom input{width:100%;border:1px solid var(--line);border-radius:16px;padding:15px 16px;font:15px "DM Sans";background:#fff;outline:none}
+.dates{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:28px 0 8px}.date{padding:23px;background:#fff;border:1px solid var(--line);border-radius:20px;text-align:center;cursor:pointer}.date b{font-family:Caveat,cursive;font-size:30px;display:block}.date small{color:var(--muted)}.date.selected{border:2px solid var(--green);background:#f4f8f2}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:28px}.strip img{width:100%;height:130px;object-fit:cover;border:7px solid #fff;box-shadow:0 6px 15px rgba(0,0,0,.1)}
+.final{text-align:center}.final-photo{width:min(390px,82vw);aspect-ratio:4/5;margin:24px auto 22px;transform:rotate(-1.5deg)}.final-photo:after{content:"14 / 15 SEPTEMBER";position:absolute;left:0;right:0;bottom:6px;text-align:center;font:600 19px Caveat,cursive;color:#35493e}
+.quote{font-family:Caveat,cursive;font-size:29px;margin-top:8px}.tiny{font:20px Caveat,cursive;color:var(--green);margin-top:20px}.gallery-link{display:inline-block;margin-top:18px;padding:12px 20px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:600}
+.hidden{display:none!important}.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}.confetti i{position:absolute;top:-20px;width:8px;height:14px;animation:fall 2.2s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(620deg);opacity:0}}
+@media(max-width:720px){.page{padding:18px 14px 30px}.split{grid-template-columns:1fr;text-align:center}.side-photo{order:-1;width:min(230px,62vw)}.choices,.dates{grid-template-columns:1fr}.strip{grid-template-columns:1fr 1fr}.strip img{height:110px}.card{border-radius:23px;padding:24px 18px}}
+</style></head>
+<body>
+<div class="page active" id="p1"><span class="decor d1">♡</span><span class="decor d2">🦋</span><span class="decor d3">✦</span><span class="decor d4">⋆</span>
+<main class="shell hero"><p class="kicker">Oishee has a tiny question…</p><div class="polaroid hero-photo"><img src="images/photo1.jpg" alt="Photo"></div>
+<h1>Do you wanna<br>GO ON A DATE,<br>MYLO? 🥺</h1><p class="subtitle">No pressure. Except… there is definitely a little pressure. 😭🤍</p>
+<div class="buttons"><button class="yes" onclick="go(2)">YES, MYLO 🫶</button><button class="no" id="noBtn">NO 😶</button></div>
+<a class="gallery-link" href="gallery.html">Open our little album 🦋</a></main></div>
+
+<div class="page" id="p2"><main class="shell card split"><div><p class="kicker">wait… WHAT?</p><h2>Okayyy… you said YES. 😭🤍</h2><p class="subtitle" style="margin-top:14px">I knew you couldn't resist me.</p><div class="navrow"><button class="yes" onclick="go(3)">Continue →</button></div></div>
+<div class="polaroid side-photo"><img src="images/photo2.jpg" alt="Photo"></div></main></div>
+
+<div class="page" id="p3"><main class="shell card"><p class="kicker">chapter two</p><h2>Where are we going? 🦋</h2><div class="choices">
+<button class="choice" onclick="pick(this,'Kashful + Kayaking')"><b>🌾 Kashful + Kayaking</b><span>a little adventure, a little chaos</span></button>
+<button class="choice" onclick="pick(this,'Thrifting + Books')"><b>📚 Thrifting + Books</b><span>cute things + getting lost between pages</span></button>
+<button class="choice" onclick="pick(this,'Zoo + Garden')"><b>🌿 Zoo + Garden</b><span>walking, talking & making memories</span></button>
+<button class="choice" onclick="pick(this,'Custom idea')"><b>💌 Lemme say...</b><span>write your own idea</span></button></div>
+<div class="custom hidden" id="customBox"><input id="customInput" placeholder="Okay, what's your genius idea?"></div><div class="navrow"><button class="yes" onclick="nextFromChoices()">That's the one →</button></div></main></div>
+
+<div class="page" id="p4"><main class="shell card"><p class="kicker">almost there</p><h2>Now tell me, Dilruba… 🤍</h2><p class="subtitle" style="margin:12px auto 0">when do I get to steal you for a day?</p>
+<div class="dates">
+<button class="date" onclick="pickDate(this,'14 September')"><b>🌷 14 September</b><small>a very good day, allegedly</small></button>
+<button class="date" onclick="pickDate(this,'15 September')"><b>🌷 15 September</b><small>also suspiciously perfect</small></button>
+<button class="date" onclick="pickDate(this,'Ughhh FINE! Next week')"><b>😩 Ughhh FINE!</b><small>Next week. Happy now? 🙄</small></button>
+</div>
+<div class="strip"><img src="images/photo3.jpg" alt=""><img src="images/photo4.jpg" alt=""><img src="images/photo5.jpg" alt=""></div>
+<div class="navrow"><button class="yes" onclick="finish()">Lock it in 🫶</button></div></main></div>
+
+<div class="page" id="p5"><main class="shell card final"><p class="kicker">officially official</p><h2>YAYYY, MYLO! 🥹🤍</h2><div class="polaroid final-photo"><img src="images/photo3.jpg" alt="Photo"></div>
+<p class="subtitle">Congratulations.<br>You officially agreed to go on a date with me. 🫶</p><p class="quote">“No backing out now, Dilruba.” 😌</p><p class="tiny">♡ from someone who really wanted to take you out ♡</p>
+<a class="gallery-link" href="gallery.html">See our little gallery 🦋</a></main></div>
+<div class="toast" id="toast"></div><div class="confetti" id="confetti"></div>
+<script>
+let selectedPlace='',selectedDate='';
+function go(n){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('p'+n).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}
+function pick(el,name){document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selectedPlace=name;document.getElementById('customBox').classList.toggle('hidden',name!=='Custom idea')}
+function nextFromChoices(){if(!selectedPlace){toast('You have to choose one 😭🤍');return}if(selectedPlace==='Custom idea'){const v=document.getElementById('customInput').value.trim();if(v)selectedPlace=v;else{toast('Tell me your idea first 👀');return}}go(4)}
+function pickDate(el,date){document.querySelectorAll('.date').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selectedDate=date}
+function finish(){if(!selectedDate){toast('Pick a date, Dilruba 🌷');return}go(5);celebrate()}
+function celebrate(){const c=document.getElementById('confetti');for(let i=0;i<55;i++){const x=document.createElement('i');x.style.left=Math.random()*100+'%';x.style.animationDelay=Math.random()*.5+'s';x.style.transform=`rotate(${Math.random()*360}deg)`;x.textContent=['♡','✦','🦋','⋆'][Math.floor(Math.random()*4)];c.appendChild(x);setTimeout(()=>x.remove(),2800)}}
+const no=document.getElementById('noBtn');let noCount=0;
+function dodge(){noCount++;const maxX=Math.min(120+noCount*18,260),maxY=Math.min(80+noCount*8,130);no.style.transform=`translate(${(Math.random()*2-1)*maxX}px,${(Math.random()*2-1)*maxY}px) rotate(${(Math.random()*2-1)*7}deg)`;const msgs=['nice try 😭','that button seems shy','are you sure?? 🥺','the universe says no to NO','MYLO PLEASE 😭🤍'];toast(msgs[Math.min(noCount-1,msgs.length-1)])}
+no.addEventListener('mouseenter',dodge);no.addEventListener('touchstart',e=>{e.preventDefault();dodge()},{passive:false});no.addEventListener('click',dodge);
+</script></body></html>

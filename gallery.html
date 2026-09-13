@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Our Little Album 🦋</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root{--cream:#f7f2e9;--paper:#fffdf8;--ink:#23352c;--muted:#6f7b72;--green:#617b69;--line:#dfe3da;--shadow:0 16px 42px rgba(35,53,44,.12)}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",sans-serif}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:radial-gradient(#7d8d80 .55px,transparent .55px);background-size:8px 8px}
+.wrap{width:min(1120px,92%);margin:auto;padding:34px 0 60px}.head{text-align:center}.kicker{font:24px Caveat,cursive;color:var(--green)}h1,h2{font-family:Caveat,cursive;margin:0}h1{font-size:clamp(54px,9vw,82px);line-height:.9}h2{font-size:40px}.sub{max-width:700px;margin:14px auto 0;color:var(--muted);line-height:1.7}.back,.btn{display:inline-block;margin:22px 5px 28px;color:var(--ink);text-decoration:none;background:#fff;border:1px solid var(--line);padding:11px 17px;border-radius:999px;font-weight:600;cursor:pointer}.btn.dark{background:var(--ink);color:#fff}.btn.danger{background:#fff0ee;color:#8b3e35;border-color:#efd0cb}.btn.small{padding:8px 12px;font-size:13px;margin:0}.toolbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px}.notice{background:#f4f8f2;border:1px solid #dbe6dc;border-radius:16px;padding:12px 15px;color:#526359;font-size:13px;line-height:1.5;margin:0 auto 24px;max-width:820px}.folders{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin:20px 0 38px}.folder{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:12px;box-shadow:var(--shadow);cursor:pointer;text-align:left;position:relative}.folder img,.folder .placeholder{width:100%;height:210px;object-fit:cover;border-radius:15px;background:#eef1eb;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:44px}.folder .name{font:700 31px Caveat,cursive;margin:9px 5px 0}.folder small{color:var(--muted);margin:0 5px}.folder .folder-actions{display:flex;gap:6px;margin:9px 5px 2px}.album{background:rgba(255,253,248,.84);border:1px solid var(--line);border-radius:26px;padding:24px;margin-top:20px}.album-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:15px;flex-wrap:wrap}.album-head p{color:var(--muted);margin:0}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.photo{background:#fff;padding:6px;box-shadow:0 7px 18px rgba(0,0,0,.08);position:relative}.photo img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;cursor:pointer}.photo:nth-child(3n){transform:rotate(1.2deg)}.photo:nth-child(4n){transform:rotate(-1.2deg)}.photo .photo-actions{display:flex;justify-content:space-between;gap:5px;margin-top:6px}.photo .delete{border:0;background:#fff0ee;color:#8b3e35;border-radius:10px;padding:6px 8px;cursor:pointer;font-size:12px}.empty{padding:30px;text-align:center;color:var(--muted);border:1px dashed #cfd7ce;border-radius:18px}.lightbox{position:fixed;inset:0;background:rgba(20,30,25,.88);display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.lightbox.show{display:flex}.lightbox img{max-width:min(94vw,1000px);max-height:88vh;object-fit:contain}.close{position:fixed;top:18px;right:22px;color:#fff;background:transparent;border:0;font-size:30px;cursor:pointer}.modal{position:fixed;inset:0;background:rgba(20,30,25,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}.modal.show{display:flex}.modal-card{background:var(--paper);border-radius:24px;padding:25px;width:min(450px,94vw);box-shadow:var(--shadow)}.modal-card h2{margin-bottom:14px}.modal-card input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px;font:15px "DM Sans";margin-bottom:12px}.modal-actions{display:flex;justify-content:flex-end;gap:8px}.hidden{display:none!important}.status{font-size:13px;color:var(--muted);margin:8px auto 18px}.starter{font-size:11px;color:#7b847d}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}.album{padding:16px}.folder img,.folder .placeholder{height:250px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="head">
+<div class="kicker">a very amateur little archive 🦋</div><h1>Our Little Album</h1>
+<p class="sub">This version is actually online. Folders, uploaded photos, renames and deletes are stored in Supabase, so the same changes can appear on every device.</p>
+<a class="back" href="index.html">← Back to the date question</a>
+<div class="toolbar">
+<button class="btn dark" id="newFolderBtn">＋ New folder</button><button class="btn" id="addBtn">＋ Add photos</button><button class="btn" id="importBtn">☁️ Import starter photos</button><button class="btn" id="loginBtn">🔐 Sign in</button><button class="btn hidden" id="logoutBtn">Log out</button>
+</div>
+<div class="status" id="status">Connecting to the online album…</div>
+<div class="notice"><b>How it works:</b> everyone can view the album. Only email accounts you add as album members can create/rename/delete folders or upload/delete photos. This keeps the public GitHub Pages site safe while still allowing shared editing.</div>
+</header>
+<section class="folders" id="folders"></section><div id="albums"></div>
+</div>
+<div class="lightbox" id="lightbox" onclick="closeBox()"><button class="close">×</button><img id="big" src="" alt="" onclick="event.stopPropagation()"></div>
+<div class="modal" id="folderModal"><div class="modal-card"><h2>Make a new folder 📁</h2><input id="folderName" placeholder="e.g. our chaos, trips, random..."><input id="folderDesc" placeholder="Short description (optional)"><div class="modal-actions"><button class="btn small" onclick="closeFolderModal()">Cancel</button><button class="btn small dark" onclick="createFolder()">Create folder</button></div></div></div>
+<div class="modal" id="authModal"><div class="modal-card"><h2 id="authTitle">Sign in 🔐</h2><input id="email" type="email" placeholder="Email"><input id="password" type="password" placeholder="Password"><div class="modal-actions"><button class="btn small" onclick="closeAuth()">Cancel</button><button class="btn small" id="authAction">Sign in</button></div><p id="authHint" style="font-size:13px;color:#6f7b72;line-height:1.5;margin:14px 0 0">Use an email you have added to the album_members table in Supabase.</p></div></div>
+<script src="config.js"></script>
+<script>
+/* Put your Supabase project values in config.js. Never put a service_role key here. */
+const SUPABASE_URL = window.MYLO_SUPABASE_URL || '';
+const SUPABASE_KEY = window.MYLO_SUPABASE_KEY || '';
+const supabase = (SUPABASE_URL && SUPABASE_KEY) ? window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY) : null;
+const starter={
+ uss:{title:'uss 📸',note:'the two of us',files:["images/uss/01.jpg","images/uss/02.jpg","images/uss/03.jpg","images/uss/04.jpg","images/uss/05.jpg","images/uss/06.jpg","images/uss/07.jpg","images/uss/08.jpg","images/uss/09.jpg"]},
+ sheonme:{title:'sheonme ✨',note:'little details, little chaos',files:["images/sheonme/01.jpg","images/sheonme/02.jpg","images/sheonme/03.jpg","images/sheonme/04.jpg","images/sheonme/05.jpg","images/sheonme/06.jpg"]},
+ her:{title:'her 🌷',note:'the main character folder',files:["images/her/01.jpg","images/her/02.jpg","images/her/03.jpg","images/her/04.jpg","images/her/05.jpg","images/her/06.jpg","images/her/07.jpg","images/her/08.jpg","images/her/09.jpg","images/her/10.jpg","images/her/11.jpg","images/her/12.jpg","images/her/13.jpg","images/her/14.jpg","images/her/15.jpg","images/her/16.jpg","images/her/17.jpg","images/her/18.jpg"]}
+};
+let folders=[], currentUser=null, member=false;
+const starterByTitle=Object.values(starter);
+const $=id=>document.getElementById(id); function esc(x){return String(x).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function status(t){$('status').textContent=t}
+function openBox(src){$('big').src=src;$('lightbox').classList.add('show')} function closeBox(){$('lightbox').classList.remove('show')}
+function openFolderModal(){if(!requireMember())return;$('folderModal').classList.add('show');$('folderName').focus()} function closeFolderModal(){$('folderModal').classList.remove('show')}
+function openAuth(){ $('authModal').classList.add('show'); $('email').focus() } function closeAuth(){$('authModal').classList.remove('show')}
+function requireMember(){if(!supabase){alert('Add your Supabase URL and publishable key to config.js first.');return false}if(!currentUser){openAuth();return false}if(!member){alert('This email is not an album member yet. Add it to album_members in Supabase, then sign in again.');return false}return true}
+async function refreshAuth(){if(!supabase)return;const {data}=await supabase.auth.getUser();currentUser=data.user||null;if(currentUser){const {data:rows}=await supabase.from('album_members').select('email').ilike('email',currentUser.email);member=!!rows?.length;$('loginBtn').classList.add('hidden');$('logoutBtn').classList.remove('hidden')}else{member=false;$('loginBtn').classList.remove('hidden');$('logoutBtn').classList.add('hidden')}render();}
+async function load(){if(!supabase){status('Not connected yet — add config.js values first.');renderStarter();return}status('Loading the online album…');const {data,error}=await supabase.from('folders').select('*').order('created_at');if(error){status('Supabase error: '+error.message);renderStarter();return}folders=data||[];folders.forEach(f=>{const s=starterByTitle.find(x=>x.title===f.title);f._starter=s?.files||[]});const {data:photos,error:pe}=await supabase.from('photos').select('*').order('created_at');if(pe){status('Photo load error: '+pe.message);return}folders.forEach(f=>{const online=(photos||[]).filter(p=>p.folder_id===f.id);f.photos=online.length?online:f._starter.map((url,i)=>({id:'starter-'+f.id+'-'+i,url,starter:true}))});render();status(currentUser?(member?'Online • editor access':'Online • view only'):'Online • view only')}
+function renderStarter(){folders=Object.entries(starter).map(([key,d])=>({id:key,title:d.title,note:d.note,photos:d.files.map((url,i)=>({id:key+i,url,starter:true}))}));render()}
+function render(){const el=$('folders');el.innerHTML='';folders.forEach(f=>{const card=document.createElement('div');card.className='folder';const cover=f.photos?.[0]?.url;card.innerHTML=cover?`<img src="${cover}" alt=""><div class="name">${esc(f.title)}</div><small>${esc(f.note||'')} · ${f.photos.length} photos</small>`:`<div class="placeholder">📁</div><div class="name">${esc(f.title)}</div><small>${esc(f.note||'')} · 0 photos</small>`;card.onclick=()=>show(f.id);const acts=document.createElement('div');acts.className='folder-actions';if(member){const r=document.createElement('button');r.className='btn small';r.textContent='Rename';r.onclick=e=>{e.stopPropagation();renameFolder(f.id)};const a=document.createElement('button');a.className='btn small';a.textContent='+ Photos';a.onclick=e=>{e.stopPropagation();uploadTo(f.id)};const d=document.createElement('button');d.className='btn small danger';d.textContent='Delete';d.onclick=e=>{e.stopPropagation();deleteFolder(f.id)};acts.append(r,a,d)}card.appendChild(acts);el.appendChild(card)})}
+function show(id){const f=folders.find(x=>x.id===id);if(!f)return;document.querySelector('.album')?.remove();const sec=document.createElement('section');sec.className='album';sec.innerHTML=`<div class="album-head"><div><h2>${esc(f.title)}</h2><p>${esc(f.note||'')}</p></div>${member?`<button class="btn small dark" onclick="uploadTo('${id}')">＋ Add photos</button>`:''}</div>`;const grid=document.createElement('div');grid.className='grid';if(!f.photos?.length)grid.innerHTML='<div class="empty" style="grid-column:1/-1">No photos here yet. Add some 📸</div>';(f.photos||[]).forEach((p,i)=>{const item=document.createElement('div');item.className='photo';item.innerHTML=`<img loading="lazy" src="${p.url}" alt="photo ${i+1}"><div class="photo-actions"><span class="starter">${p.starter?'starter photo':'online photo'}</span>${member?'<button class="delete">Delete</button>':''}</div>`;item.querySelector('img').onclick=()=>openBox(p.url);if(member)item.querySelector('.delete').onclick=()=>deletePhoto(p);grid.appendChild(item)});sec.appendChild(grid);$('albums').appendChild(sec);sec.scrollIntoView({behavior:'smooth',block:'start'})}
+async function createFolder(){if(!requireMember())return;const title=$('folderName').value.trim();if(!title)return;const note=$('folderDesc').value.trim();const {error}=await supabase.from('folders').insert({title,note,created_by:currentUser.id});if(error)alert(error.message);else{closeFolderModal();$('folderName').value='';$('folderDesc').value='';await load()}}
+async function renameFolder(id){if(!requireMember())return;const f=folders.find(x=>x.id===id);const title=prompt('New folder name:',f.title);if(!title?.trim())return;const {error}=await supabase.from('folders').update({title:title.trim()}).eq('id',id);if(error)alert(error.message);else await load()}
+async function deleteFolder(id){if(!requireMember())return;if(!confirm('Delete this folder and all its online photos?'))return;const {error}=await supabase.from('folders').delete().eq('id',id);if(error)alert(error.message);else{document.querySelector('.album')?.remove();await load()}}
+function uploadTo(id){if(!requireMember())return;const input=document.createElement('input');input.type='file';input.accept='image/*';input.multiple=true;input.onchange=()=>uploadFiles(id,input.files);input.click()}
+async function uploadFiles(folderId,files){if(!files?.length)return;status('Uploading photos…');for(const file of [...files]){const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const path=`${folderId}/${crypto.randomUUID()}-${safe}`;const {error:up}=await supabase.storage.from('album').upload(path,file,{upsert:false});if(up){alert('Upload failed: '+up.message);continue}const {data:url}=supabase.storage.from('album').getPublicUrl(path);const {error:ins}=await supabase.from('photos').insert({folder_id:folderId,storage_path:path,url:url.publicUrl,original_name:file.name,created_by:currentUser.id});if(ins)alert('Database record failed: '+ins.message)}await load()}
+async function deletePhoto(p){if(!requireMember())return;if(!confirm('Delete this online photo?'))return;const {error:db}=await supabase.from('photos').delete().eq('id',p.id);if(db){alert(db.message);return}if(p.storage_path)await supabase.storage.from('album').remove([p.storage_path]);await load()}
+async function importStarter(){
+ if(!requireMember())return;
+ if(!confirm('Import the original bundled photos into online Supabase storage? This only needs to be done once.'))return;
+ const onlineRows=await supabase.from('photos').select('folder_id,original_name');
+ if(onlineRows.error){alert(onlineRows.error.message);return}
+ status('Importing starter photos…');
+ for(const f of folders){
+   const starterDef=starterByTitle.find(x=>x.title===f.title); if(!starterDef)continue;
+   for(const url of starterDef.files){
+     const original=url.split('/').pop();
+     if((onlineRows.data||[]).some(r=>r.folder_id===f.id && r.original_name===original))continue;
+     const resp=await fetch(url); const blob=await resp.blob();
+     const path=`${f.id}/${crypto.randomUUID()}-${original}`;
+     const {error:up}=await supabase.storage.from('album').upload(path,blob,{upsert:false,contentType:blob.type});
+     if(up){alert('Upload failed: '+up.message);continue}
+     const {data:urlData}=supabase.storage.from('album').getPublicUrl(path);
+     const {error:ins}=await supabase.from('photos').insert({folder_id:f.id,storage_path:path,url:urlData.publicUrl,original_name:original,created_by:currentUser.id});
+     if(ins){alert('Database record failed: '+ins.message);continue}
+   }
+ }
+ await load();
+}
+async function doLogin(){if(!supabase)return;const email=$('email').value.trim(),password=$('password').value;if(!email||!password)return;const {error}=await supabase.auth.signInWithPassword({email,password});if(error){alert(error.message);return}closeAuth();await refreshAuth();await load()}
+async function doLogout(){await supabase.auth.signOut();await refreshAuth();await load()}
+$('newFolderBtn').onclick=openFolderModal;$('addBtn').onclick=()=>{if(!requireMember())return;const f=folders[0];if(f)uploadTo(f.id)};$('importBtn').onclick=importStarter;$('loginBtn').onclick=openAuth;$('logoutBtn').onclick=doLogout;$('authAction').onclick=doLogin;
+(async()=>{if(supabase){supabase.auth.onAuthStateChange(()=>setTimeout(refreshAuth,0));await refreshAuth();await load()}else renderStarter()})();
+</script>
+</body></html>
